@@ -1,5 +1,5 @@
 const collectOfCompanies = new webix.DataCollection({
-  url: "data/companies.js"
+  url: "data/companiesData.js"
 });
 
 const popupConfig = {
@@ -72,15 +72,29 @@ const popupConfig = {
             autowidth: true,
             click: () => {
               let checkedItem = Object.values($$("popupDatatable").data.pull)
-                .filter(item => item.checked === 1);
+                .filter(item => item.checked === 1)
+                .map(item => {
+                  let obj = {
+                    id: item.id,
+                    name: item.name,
+                    value: item.value,
+                    addedValue: item.addedValue,
+                    sum: item.value + item.addedValue
+                  };
+                  return obj;
+                });
+
+              $$("dataviewData").clearAll();
+              $$("dataviewData").parse(checkedItem);
+
+              $$("dataviewData").define("xCount", checkedItem.length);
+              $$("dataviewData").resize();
+              
               $$("window").hide();
             }
           }
         ]
       },
     ],
-  },
-  on: {
-
   },
 };
