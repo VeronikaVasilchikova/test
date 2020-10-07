@@ -1,4 +1,4 @@
-[
+const companiesData = [
 	{"id": 1, "name": "Smith", "value": 157, "addedValue": 57, "checked": 0},
 	{"id": 2, "name": "Brown", "value": 132, "addedValue": 32, "checked": 0},
 	{"id": 3, "name": "Sallivan", "value": 121, "addedValue": 21, "checked": 0},
