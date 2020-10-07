@@ -15,7 +15,7 @@ const popup = {
           },
           {
             view: "label",
-            id: "closeLabel",
+            id: "closePopupLabel",
             width: 60,
             label: "Close",
           },
@@ -42,11 +42,7 @@ const popup = {
           {
             id: "value",
             header: "Offer",
-            template: (obj) =>{
-              return `
-                <span>${obj.value} (${obj.addedValue})</span>
-              `;
-            }
+            template: obj => `<span>${obj.value} (${obj.addedValue})</span>`,
           },
         ],
         data: []
@@ -56,7 +52,7 @@ const popup = {
           {},
           {
             view: "button",
-            id: "addButton",
+            id: "addItemButton",
             label: "Add offer to compare",
             type: "icon",
             icon: "mdi mdi-download",
@@ -70,7 +66,7 @@ const popup = {
 
 webix.protoUI(
   {
-    name: "myComponent",
+    name: "compareOffersComponent",
     defaults: {
       margin: 10,
       cols: [
@@ -80,14 +76,13 @@ webix.protoUI(
           width: 400,
           body: {
             view:"dataview",
-            id: "dataviewData",
+            id: "dataviewOffers",
             yCount: 1,
             type: {
               height: 150,
               width: 200
             },
-            template: (obj) => {
-              return `
+            template: obj => `
                 <div style="font-weight: bold; text-align: center">
                   <span>${obj.name}</span>
                   <span class='mdi mdi-trash-can-outline'></span>
@@ -96,18 +91,16 @@ webix.protoUI(
                 <div style="text-align: center">${obj.addedValue}</div>
                 <div style="text-align: center">${obj.value + obj.addedValue}</div>
                 <div style="font-weight: bold; text-align: center">Price(per, final)</div>
-              `;
-            },
+              `,
             onClick: {
               "mdi-trash-can-outline": function(e, id) {
-                this.getTopParentView().removeChild(id);
+                this.getTopParentView().removeItem(id);
               }
             }
           },
         },
         {
           view: "button",
-          id: "buttonWithPopup",
           type: "icon",
           icon: "wxi-plus",
           label: "Add offer to compare",
@@ -127,12 +120,12 @@ webix.protoUI(
       this.$$("popupDatatable").parse(data);
 
       this.$ready.push(() => {
-        const addButton = this.getAddButton();
-        const datatable = this.getDatatable();
-        const closeLabel = this.getCloseLabel();
+        const addItemButton = this.getAddItemButton();
+        const popupDatatable = this.getPopupDatatable();
+        const closePopupLabel = this.getClosePopupLabel();
 
-        addButton.attachEvent("onItemClick", (id, e) => {
-          let checkedItem = Object.values(datatable.data.pull)
+        addItemButton.attachEvent("onItemClick", (id, e) => {
+          let markedItem = Object.values(popupDatatable.data.pull)
             .filter(item => item.checked === 1)
             .map(item => {
               let obj = {
@@ -144,11 +137,11 @@ webix.protoUI(
               };
               return obj;
             });
-            this.addChild(checkedItem);
+            this.addItem(markedItem);
             this.closePopup();
         });
 
-        closeLabel.attachEvent("onItemClick", (id, e) => {
+        closePopupLabel.attachEvent("onItemClick", (id, e) => {
           this.closePopup();
         });
       });
@@ -156,29 +149,30 @@ webix.protoUI(
     getPopup() {
       return this._popup || {};
     },
-    getDatatable() {
+    getPopupDatatable() {
       return this.$$("popupDatatable");
     },
-    getAddButton() {
-      return this.$$("addButton");
+    getAddItemButton() {
+      return this.$$("addItemButton");
     },
-    getCloseLabel() {
-      return this.$$("closeLabel");
+    getClosePopupLabel() {
+      return this.$$("closePopupLabel");
     },
     closePopup() {
       this.getPopup().hide();
     },
-    addChild(item) {
-      this.$$("dataviewData").clearAll();
-      this.$$("dataviewData").parse(item);
-      this.$$("dataviewData").define("xCount", item.length);
-      this.$$("dataviewData").resize();
+    addItem(item) {
+      const dataviewOffersLayout = this.$$("dataviewOffers");
+      dataviewOffersLayout.clearAll();
+      dataviewOffersLayout.parse(item);
+      dataviewOffersLayout.define("xCount", item.length);
+      dataviewOffersLayout.resize();
     },
-    removeChild(id) {
-      const companiesLayout = this.$$("dataviewData");
-      companiesLayout.remove(id);
-      companiesLayout.define("xCount", this.$$("dataviewData").config.xCount - 1);
-      companiesLayout.resize();
+    removeItem(id) {
+      const dataviewOffersLayout = this.$$("dataviewOffers");
+      dataviewOffersLayout.remove(id);
+      dataviewOffersLayout.define("xCount", dataviewOffersLayout.config.xCount - 1);
+      dataviewOffersLayout.resize();
       this.$$("popupDatatable").updateItem(id, {checked: 0});
     },
   },
