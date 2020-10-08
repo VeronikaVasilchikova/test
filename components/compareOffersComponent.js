@@ -28,11 +28,14 @@ const popup = {
         columns: [
           {
             id: "checked",
-            header: "",
+            header: {
+              content: "masterCheckbox",
+              contentId: "checkedAll",
+            },
             template: "{common.checkbox()}",
             checkValue: 1,
             uncheckValue: 0,
-            width: 40
+            width: 40,
           },
           {
             id: "name",
@@ -121,7 +124,7 @@ webix.protoUI(
 
       this.$ready.push(() => {
         this.addItemButton.attachEvent("onItemClick", (id, e) => {
-          const popupDatatableData = this.popupDatatable.serialize(true) || [];
+          const popupDatatableData = this.popupDatatable.serialize(true);
           const markedItems = popupDatatableData.filter(item => item.checked === 1);
           this.addItem(markedItems);
           this.closePopup();
@@ -150,21 +153,31 @@ webix.protoUI(
     closePopup() {
       this.popup.hide();
     },
-    changeNumOfItemsOfDataview(kindOfItem, numOfItems) {
-      this.dataviewOffers.define(kindOfItem, numOfItems);
-      this.dataviewOffers.resize();
+    changeConfigurationOfView(view, property, value) {
+      view.define(property, value);
+      view.resize();
     },
     addItem(item) {
       const numOfCols = item.length;
       this.dataviewOffers.clearAll();
       this.dataviewOffers.parse(item);
-      this.changeNumOfItemsOfDataview("xCount", numOfCols);
+      this.changeConfigurationOfView(this.dataviewOffers, "xCount", numOfCols);
     },
     removeItem(id) {
       const numOfCols = this.dataviewOffers.config.xCount - 1;
+      const controlAllCheck = this.popupDatatable.getHeaderContent("checkedAll");
       this.dataviewOffers.remove(id);
-      this.changeNumOfItemsOfDataview("xCount", numOfCols);
-      this.popupDatatable.updateItem(id, {checked: 0});
+      const data = webix.copy(this.popupDatatable.serialize(true))
+        .map(item => Number(item.id) === Number(id) ? { ...item, checked: 0 } : item);
+      this.changeConfigurationOfView(this.dataviewOffers, "xCount", numOfCols);
+      if(controlAllCheck.isChecked()) {
+        this.popupDatatable.getHeaderContent("checkedAll").uncheck();
+        this.popupDatatable.clearAll();
+        this.popupDatatable.parse(data);
+      }
+      else {
+        this.popupDatatable.updateItem(id, {checked: 0});
+      }
     },
   },
   webix.IdSpace,
