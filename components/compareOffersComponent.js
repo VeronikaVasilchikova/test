@@ -150,20 +150,20 @@ webix.protoUI(
     closePopup() {
       this.popup.hide();
     },
-    changeNumOfCols(numOfCols) {
-      this.dataviewOffers.define("xCount", numOfCols);
+    changeNumOfItemsOfDataview(kindOfItem, numOfItems) {
+      this.dataviewOffers.define(kindOfItem, numOfItems);
       this.dataviewOffers.resize();
     },
     addItem(item) {
       const numOfCols = item.length;
       this.dataviewOffers.clearAll();
       this.dataviewOffers.parse(item);
-      this.changeNumOfCols(numOfCols);
+      this.changeNumOfItemsOfDataview("xCount", numOfCols);
     },
     removeItem(id) {
       const numOfCols = this.dataviewOffers.config.xCount - 1;
       this.dataviewOffers.remove(id);
-      this.changeNumOfCols(numOfCols);
+      this.changeNumOfItemsOfDataview("xCount", numOfCols);
       this.popupDatatable.updateItem(id, {checked: 0});
     },
   },
