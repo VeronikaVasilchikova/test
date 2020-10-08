@@ -85,7 +85,7 @@ webix.protoUI(
             template: obj => `
                 <div style="font-weight: bold; text-align: center">
                   <span>${obj.name}</span>
-                  <span class='mdi mdi-trash-can-outline'></span>
+                  <span class='mdi mdi-trash-can-outline remove_item'></span>
                 </div>
                 <div style="text-align: center">${obj.value}</div>
                 <div style="text-align: center">${obj.addedValue}</div>
@@ -93,7 +93,7 @@ webix.protoUI(
                 <div style="font-weight: bold; text-align: center">Price(per, final)</div>
               `,
             onClick: {
-              "mdi-trash-can-outline": function(e, id) {
+              remove_item(e, id) {
                 this.getTopParentView().removeItem(id);
               }
             }
@@ -122,7 +122,7 @@ webix.protoUI(
       this.$ready.push(() => {
         this.addItemButton.attachEvent("onItemClick", (id, e) => {
           const popupDatatableData = this.popupDatatable.serialize(true) || [];
-          const markedItems = popupDatatableData.filter(item => item.checked === 1) || [];
+          const markedItems = popupDatatableData.filter(item => item.checked === 1);
           this.addItem(markedItems);
           this.closePopup();
         });
