@@ -105,9 +105,9 @@ webix.protoUI(
           icon: "wxi-plus",
           label: "Add offer to compare",
           autowidth: true,
-          click: function() {
-            const popup = this.getParentView().popup;
-            return popup.show(this.getParentView().getNode(), {
+          click() {
+            const parentView = this.getParentView();
+            parentView.popup.show(parentView.getNode(), {
               pos: "left",
             });
           }
