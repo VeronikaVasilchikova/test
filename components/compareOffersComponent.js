@@ -116,7 +116,7 @@ webix.protoUI(
     },
     $init(config) {
       this._popup = webix.ui(webix.copy(popup));
-      const data = config.data;
+      const data = config.data || [];
       this.popupDatatable.parse(data);
 
       this.$ready.push(() => {
