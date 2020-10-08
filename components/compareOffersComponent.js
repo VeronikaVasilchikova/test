@@ -121,10 +121,10 @@ webix.protoUI(
 
       this.$ready.push(() => {
         this.addItemButton.attachEvent("onItemClick", (id, e) => {
-          const markedItem = Object.values(this.popupDatatable.data.pull)
-            .filter(item => item.checked === 1);
-            this.addItem(markedItem);
-            this.closePopup();
+          const popupDatatableData = this.popupDatatable.serialize(true) || [];
+          const markedItems = popupDatatableData.filter(item => item.checked === 1) || [];
+          this.addItem(markedItems);
+          this.closePopup();
         });
 
         this.closePopupLabel.attachEvent("onItemClick", (id, e) => {
