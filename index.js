@@ -4,7 +4,7 @@ webix.ready(function() {
     cols: [
       {},
       {
-        view: "myComponent",
+        view: "compareOffersComponent",
         data: companiesData
       },
       {}
