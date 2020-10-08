@@ -106,7 +106,7 @@ webix.protoUI(
           label: "Add offer to compare",
           autowidth: true,
           click: function() {
-            const popup = this.getParentView().getPopup();
+            const popup = this.getParentView().popup;
             return popup.show(this.getParentView().getNode(), {
               pos: "left",
             });
@@ -117,58 +117,54 @@ webix.protoUI(
     $init(config) {
       this._popup = webix.ui(webix.copy(popup));
       const data = config.data;
-      this.$$("popupDatatable").parse(data);
+      this.popupDatatable.parse(data);
 
       this.$ready.push(() => {
-        const addItemButton = this.getAddItemButton();
-        const popupDatatable = this.getPopupDatatable();
-        const closePopupLabel = this.getClosePopupLabel();
-
-        addItemButton.attachEvent("onItemClick", (id, e) => {
-          const markedItem = Object.values(popupDatatable.data.pull)
+        this.addItemButton.attachEvent("onItemClick", (id, e) => {
+          const markedItem = Object.values(this.popupDatatable.data.pull)
             .filter(item => item.checked === 1);
             this.addItem(markedItem);
             this.closePopup();
         });
 
-        closePopupLabel.attachEvent("onItemClick", (id, e) => {
+        this.closePopupLabel.attachEvent("onItemClick", (id, e) => {
           this.closePopup();
         });
       });
     },
-    getPopup() {
+    get popup() {
       return this._popup || {};
     },
-    getPopupDatatable() {
+    get popupDatatable() {
       return this.$$("popupDatatable");
     },
-    getAddItemButton() {
+    get addItemButton() {
       return this.$$("addItemButton");
     },
-    getClosePopupLabel() {
+    get closePopupLabel() {
       return this.$$("closePopupLabel");
     },
+    get dataviewOffers() {
+      return this.$$("dataviewOffers");
+    },
     closePopup() {
-      this.getPopup().hide();
+      this.popup.hide();
     },
     changeNumOfCols(numOfCols) {
-      const dataviewOffersLayout = this.$$("dataviewOffers");
-      dataviewOffersLayout.define("xCount", numOfCols);
-      dataviewOffersLayout.resize();
+      this.dataviewOffers.define("xCount", numOfCols);
+      this.dataviewOffers.resize();
     },
     addItem(item) {
-      const dataviewOffersLayout = this.$$("dataviewOffers");
       const numOfCols = item.length;
-      dataviewOffersLayout.clearAll();
-      dataviewOffersLayout.parse(item);
+      this.dataviewOffers.clearAll();
+      this.dataviewOffers.parse(item);
       this.changeNumOfCols(numOfCols);
     },
     removeItem(id) {
-      const dataviewOffersLayout = this.$$("dataviewOffers");
-      const numOfCols = dataviewOffersLayout.config.xCount - 1;
-      dataviewOffersLayout.remove(id);
+      const numOfCols = this.dataviewOffers.config.xCount - 1;
+      this.dataviewOffers.remove(id);
       this.changeNumOfCols(numOfCols);
-      this.$$("popupDatatable").updateItem(id, {checked: 0});
+      this.popupDatatable.updateItem(id, {checked: 0});
     },
   },
   webix.IdSpace,
