@@ -125,18 +125,8 @@ webix.protoUI(
         const closePopupLabel = this.getClosePopupLabel();
 
         addItemButton.attachEvent("onItemClick", (id, e) => {
-          let markedItem = Object.values(popupDatatable.data.pull)
-            .filter(item => item.checked === 1)
-            .map(item => {
-              let obj = {
-                id: item.id,
-                name: item.name,
-                value: item.value,
-                addedValue: item.addedValue,
-                sum: item.value + item.addedValue
-              };
-              return obj;
-            });
+          const markedItem = Object.values(popupDatatable.data.pull)
+            .filter(item => item.checked === 1);
             this.addItem(markedItem);
             this.closePopup();
         });
