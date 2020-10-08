@@ -151,18 +151,23 @@ webix.protoUI(
     closePopup() {
       this.getPopup().hide();
     },
+    changeNumOfCols(numOfCols) {
+      const dataviewOffersLayout = this.$$("dataviewOffers");
+      dataviewOffersLayout.define("xCount", numOfCols);
+      dataviewOffersLayout.resize();
+    },
     addItem(item) {
       const dataviewOffersLayout = this.$$("dataviewOffers");
+      const numOfCols = item.length;
       dataviewOffersLayout.clearAll();
       dataviewOffersLayout.parse(item);
-      dataviewOffersLayout.define("xCount", item.length);
-      dataviewOffersLayout.resize();
+      this.changeNumOfCols(numOfCols);
     },
     removeItem(id) {
       const dataviewOffersLayout = this.$$("dataviewOffers");
+      const numOfCols = dataviewOffersLayout.config.xCount - 1;
       dataviewOffersLayout.remove(id);
-      dataviewOffersLayout.define("xCount", dataviewOffersLayout.config.xCount - 1);
-      dataviewOffersLayout.resize();
+      this.changeNumOfCols(numOfCols);
       this.$$("popupDatatable").updateItem(id, {checked: 0});
     },
   },
